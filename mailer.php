@@ -19,7 +19,7 @@ $mail->Host = "smtp.gmail.com";
 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port = 587;
 $mail->Username = "ofurstore@gmail.com";//sender email,can be change to your own email
-$mail->Password = "weqr glie hrju pxtp";//app password need to be request in google manage,two step verification need to be on 
+$mail->Password = "";//app password need to be request in google manage,two step verification need to be on 
 
 $mail->isHtml(true);
 
