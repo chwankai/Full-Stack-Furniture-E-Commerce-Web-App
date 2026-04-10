@@ -87,19 +87,19 @@ if (!$conn) {
 
 ## 📸 Screenshot
 * User Module
-<img width="362" height="184" alt="Image" src="https://github.com/user-attachments/assets/9aeb74f5-e924-4f6f-807f-ef9c73614847" />
+<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/9aeb74f5-e924-4f6f-807f-ef9c73614847" />
 
 <img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/ca43a6d3-c2fa-4dd6-9297-30ee20820150" />
 
-<img width="415" height="227" alt="Image" src="https://github.com/user-attachments/assets/7028bde9-7a1d-4150-ab0e-629ed1f02a94" />
+<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/7028bde9-7a1d-4150-ab0e-629ed1f02a94" />
 
 <img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/d4a91d20-dfdf-4cfb-ace0-2acaf10bf2ce" />
 
 * Admin Main Page
 
-<img width="415" height="221" alt="Image" src="https://github.com/user-attachments/assets/74395633-eab3-4bd2-a76c-38dc2e9a90ab" />
+<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/74395633-eab3-4bd2-a76c-38dc2e9a90ab" />
 
-<img width="415" height="204" alt="Image" src="https://github.com/user-attachments/assets/4dc45737-bd58-4a8c-803c-33f426468c49" />
+<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/4dc45737-bd58-4a8c-803c-33f426468c49" />
 
 ---
 
