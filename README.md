@@ -31,18 +31,6 @@ This project is a **full-stack web application** designed for an online furnitur
 
 ---
 
-## 📁 Project Structure
-```
-project/
-├── frontend/
-├── backend/
-├── database/
-├── assets/
-└── README.md
-```
-
----
-
 ## ⚙️ Installation & Setup
 ### 1. Clone the repository
 ```bash
