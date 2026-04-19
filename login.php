@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 error_reporting(0);
 include ('includes/config.php');
 // php Code  for user Registration
@@ -25,6 +25,7 @@ if (isset($_POST['login'])) {
 	$num = mysqli_fetch_array($query);
 	if ($num > 0) {
 		$extra = "index.php";//after login it will load this page 
+		session_regenerate_id(true);
 		$_SESSION['login'] = $_POST['email'];
 		$_SESSION['id'] = $num['id'];
 		$_SESSION['username'] = $num['name'];
@@ -75,7 +76,6 @@ if (isset($_POST['login'])) {
 	<link href="assets/css/lightbox.css" rel="stylesheet">
 	<link rel="stylesheet" href="assets/css/animate.min.css">
 	<link rel="stylesheet" href="assets/css/rateit.css">
-	<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="assets/css/config.css">
 
 	<!-- Icons/Glyphs -->
@@ -317,14 +317,11 @@ if (isset($_POST['login'])) {
 	<?php include ('includes/footer.php'); ?>
 	<script src="assets/js/jquery-1.11.1.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/bootstrap-hover-dropdown.min.js"></script>
 	<script src="assets/js/owl.carousel.min.js"></script>
 	<script src="assets/js/echo.min.js"></script>
 	<script src="assets/js/jquery.easing-1.3.min.js"></script>
-	<script src="assets/js/bootstrap-slider.min.js"></script>
 	<script src="assets/js/jquery.rateit.min.js"></script>
 	<script type="text/javascript" src="assets/js/lightbox.min.js"></script>
-	<script src="assets/js/bootstrap-select.min.js"></script>
 	<script src="assets/js/wow.min.js"></script>
 	<script src="assets/js/scripts.js"></script>
 	<script src="assets/js/password-validation-signup.js"></script>

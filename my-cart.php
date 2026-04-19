@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 error_reporting(0);
 include ('includes/config.php');
 
@@ -293,7 +293,6 @@ function calculateShippingFee($con, $state, $subtotal)
 	<link href="assets/css/lightbox.css" rel="stylesheet">
 	<link rel="stylesheet" href="assets/css/animate.min.css">
 	<link rel="stylesheet" href="assets/css/rateit.css">
-	<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 	<link rel="stylesheet" href="assets/css/config.css">
 	<script src="assets/js/statecitylist.js"></script>
 
@@ -783,7 +782,7 @@ function calculateShippingFee($con, $state, $subtotal)
 									<h1 style='text-align:center'>Nothing added to cart.</h1>
 								</div>
 								<div>
-									<img src='img/nothing-here.avif' style='display: block;margin-left: auto;margin-right: auto;width: 30%;' alt='nothing here image'>
+									<img src='assets/images/nothing-here.avif' style='display: block;margin-left: auto;margin-right: auto;width: 30%;' alt='nothing here image'>
 								</div>";
 							} ?>
 				</div>
@@ -796,14 +795,11 @@ function calculateShippingFee($con, $state, $subtotal)
 	<?php include ('includes/footer.php'); ?>
 	<script src="assets/js/jquery-1.11.1.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
-	<script src="assets/js/bootstrap-hover-dropdown.min.js"></script>
 	<script src="assets/js/owl.carousel.min.js"></script>
 	<script src="assets/js/echo.min.js"></script>
 	<script src="assets/js/jquery.easing-1.3.min.js"></script>
-	<script src="assets/js/bootstrap-slider.min.js"></script>
 	<script src="assets/js/jquery.rateit.min.js"></script>
 	<script type="text/javascript" src="assets/js/lightbox.min.js"></script>
-	<script src="assets/js/bootstrap-select.min.js"></script>
 	<script src="assets/js/wow.min.js"></script>
 	<script src="assets/js/scripts.js"></script>
 	<script src="switchstylesheet/switchstylesheet.js"></script>

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/include/admin_session.php';
 error_reporting(0);
 include ("include/config.php");
 if (isset($_POST['submit'])) {
@@ -18,6 +18,7 @@ if (isset($_POST['submit'])) {
             exit();
         } else {
             $extra = "dashboard.php";//
+            session_regenerate_id(true);
             $_SESSION['alogin'] = $_POST['username'];
             $_SESSION['id'] = $num['id'];
             $_SESSION['role'] = $num['role'];
@@ -45,7 +46,7 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OFS | Admin Login Portal</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
     <script src="https://kit.fontawesome.com/4a07c4d5e3.js" crossorigin="anonymous"></script>
 </head>
 <style>
@@ -68,7 +69,7 @@ if (isset($_POST['submit'])) {
             <header class="header">
                 <div class="logo">
                     <a href="index.html">
-                        <img src="bootstrap/img/Main_logo.png" alt="Logo">
+                        <img src="images/Main_logo.png" alt="Logo">
                     </a>
                 </div>
                 <a href="http://localhost/final-year-project/index.php" class="back-button">Client Side</a>

@@ -1,7 +1,5 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-  session_start();
-}
+require_once __DIR__ . '/admin_session.php';
 error_reporting(0);
 include('include/config.php');
 

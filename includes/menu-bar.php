@@ -15,7 +15,7 @@
                     <div class="nav-outer">
                         <ul class="nav navbar-nav">
                             <li class="active dropdown yamm-fw">
-                                <a href="index.php" data-hover="dropdown" class="dropdown-toggle">Home</a>
+                                <a href="index.php" class="dropdown-toggle">Home</a>
 
                             </li>
                             <?php $sql = mysqli_query($con, "select id,categoryName from category where Status = 'Active' limit 6");

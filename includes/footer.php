@@ -9,7 +9,7 @@
         <div class="logo">
             <a href="index.php">
                 
-<h3><img id="main-logo" src="img/main_logo.png" alt="Online Furniture Store" style="display: block;margin-left: 0;margin-right: auto;width: 50%;"></h3>
+<h3><img id="main-logo" src="assets/images/logo/main-logo.png" alt="Online Furniture Store" style="display: block;margin-left: 0;margin-right: auto;width: 50%;"></h3>
             </a>
         </div><!-- /.logo -->
     

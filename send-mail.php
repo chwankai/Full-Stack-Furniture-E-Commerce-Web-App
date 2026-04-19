@@ -1,4 +1,4 @@
-<?php //send  reset password via gmail 
+<?php //send reset password via gmail 
 
 $email = $_POST["email"];
 

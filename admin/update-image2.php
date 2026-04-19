@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/include/admin_session.php';
 include ('include/config.php');
 if (strlen($_SESSION['alogin']) == 0) {
 	header('location:index.php');
@@ -30,7 +30,7 @@ if (strlen($_SESSION['alogin']) == 0) {
 		<link type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 		<link type="text/css" href="css/theme.css" rel="stylesheet">
 		<link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
-		<link rel="shortcut icon" href="assets/images/favicon.ico">
+		<link rel="shortcut icon" href="images/favicon.ico">
 		<link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
 			rel='stylesheet'>
 		<script src="http://js.nicedit.com/nicEdit-latest.js" type="text/javascript"></script>

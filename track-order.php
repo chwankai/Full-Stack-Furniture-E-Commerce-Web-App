@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 include_once 'includes/config.php';
 $oid = intval($_GET['oid']);
 ?>
@@ -10,12 +10,10 @@ $oid = intval($_GET['oid']);
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Order Details</title>
-  <link type="text/css" href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link type="text/css" href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-  <link type="text/css" href="css/theme.css" rel="stylesheet">
-  <link type="text/css" href="css/updateorder.css" rel="stylesheet">
-  <link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/font-awesome.min.css">
   <link rel="stylesheet" href="assets/css/trackorder.css">
+  <link rel="shortcut icon" href="assets/images/favicon.ico">
   <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
     rel='stylesheet'>
   <script src="https://kit.fontawesome.com/4a07c4d5e3.js" crossorigin="anonymous"></script>
@@ -33,15 +31,12 @@ $oid = intval($_GET['oid']);
     }
 
   </script>
-
-  <title>Order Details Page</title>
-
 </head>
 
 <body>
   <div class="container">
     <div class="logo">
-      <a href="index.php"><img src="img/Main_logo.png" alt="Online Furniture Store Logo"></a>
+      <a href="index.php"><img src="assets/images/logo/main-logo.png" alt="Online Furniture Store Logo"></a>
 
     </div>
     <div class="content">

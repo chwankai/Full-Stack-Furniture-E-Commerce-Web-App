@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 include ('includes/config.php');
 
 // Check if user is logged in

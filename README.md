@@ -1,115 +1,228 @@
-# 🛋️ Full-Stack Furniture E-Commerce Web Application
+# Full-Stack Furniture E-Commerce Web App
 
-## 📌 Overview
-This project is a **full-stack web application** designed for an online furniture store. It allows users to browse, search, and purchase furniture products, while administrators can manage products and orders through a backend system.
+## Overview
+This project is a PHP + MySQL furniture e-commerce application with:
 
----
+- a customer-facing storefront
+- an admin panel for product and order management
+- shared assets and reusable PHP includes
 
-## 🚀 Features
-### 👤 User Features
-* User registration and login
-* Browse furniture products
-* Search and filter items
-* Add to cart
-* Place orders
-### 🛠️ Admin Features
-* Add, update, and delete products
-* Manage inventory
-* View and manage customer orders
+The codebase is largely built with core PHP, Bootstrap, jQuery, and MySQL.
 
----
+## Main Applications
+- Storefront: `index.php`
+- Admin panel: `admin/index.php`
+- Customer order tracking page: `track-order.php`
 
-## 🧠 Tech Stack
-### Frontend
-* HTML
-* CSS
-* JavaScript
-### Backend
-* PHP (Core PHP)
-### Database
-* MySQL
+## Tech Stack
+- Backend: PHP
+- Database: MySQL
+- Frontend: HTML, CSS, JavaScript, jQuery, Bootstrap
+- Mail/config support: Composer + `vlucas/phpdotenv`
 
----
+## Setup
+1. Place the project inside your local web root, for example XAMPP `htdocs/`.
+2. Create a MySQL database named `shopping`.
+3. Import `shopping.sql`.
+4. Update database credentials if needed:
+   - storefront/shared config: `includes/config.php`
+   - admin config: `admin/include/config.php`
+5. Install PHP dependencies if needed:
 
-## ⚙️ Installation & Setup
-### 1. Clone the repository
 ```bash
-git clone https://github.com/chwankai/Full-Stack-Furniture-E-Commerce-Web-App.git
-cd furniture-ecommerce
+composer install
 ```
-### 2. Setup Local Server
-You can use XAMPP / WAMP / MAMP:
-* Place project inside `htdocs` (XAMPP)
-* Start Apache & MySQL
 
-### 3. Database Setup
-* Open phpMyAdmin
-* Create database: `furniture_store`
-* Import SQL file from `/database/furniture_store.sql`
+6. Add mail credentials to `.env` if you use the email features.
 
-### 4. Configure Database Connection
-Edit `backend/config.php`:
-```php
-<?php
-$host = "localhost";
-$user = "root";
-$password = "";
-$dbname = "furniture_store";
-
-$conn = mysqli_connect($host, $user, $password, $dbname);
-
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
-?>
+## Current Folder Structure
+```text
+Full-Stack-Furniture-E-Commerce-Web-App/
+├── admin/
+│   ├── bootstrap/
+│   ├── css/
+│   ├── images/
+│   ├── include/
+│   ├── phpmailer/
+│   ├── productimages/
+│   ├── scripts/
+│   └── tcpdf/
+├── assets/
+│   ├── css/
+│   ├── fonts/
+│   ├── images/
+│   ├── js/
+│   └── less/
+├── datepicker164/
+├── includes/
+├── layouts/
+├── sendemail/
+├── vendor/
+├── *.php
+├── composer.json
+├── composer.lock
+├── shopping.sql
+└── .env
 ```
-### 5. Run the Application
-* Open browser
-* Visit: `http://localhost/furniture-ecommerce/index.php/` for customer site
-* Visit: `http://localhost/furniture-ecommerce/admin/index.php/` for admin management site
 
----
+## Folder Explanations
 
-## 🗄️ Database
-* Stores user data, products, and orders
-* Supports CRUD operations
-* Relational structure for efficient querying
+### `admin/`
+Contains the full admin-side application.
 
----
+### `admin/bootstrap/`
+Legacy Bootstrap assets still used by the live admin pages.
 
-## 📊 Key Functionalities
-* Full CRUD operations for products
-* Secure authentication system (PHP sessions)
-* Shopping cart and checkout workflow
-* Responsive UI using HTML, CSS, JavaScript
+### `admin/css/`
+Admin-specific stylesheet bundle used by the runtime admin UI.
 
----
+Files:
+- `styles.css`: admin login/entry screen styles
+- `theme.css`: main admin layout/theme styles
+- `updateorder.css`: order update/order detail page styles
+- `loader.css`: admin loading/overlay styles
 
-## 📸 Screenshot
-* User Module
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/9aeb74f5-e924-4f6f-807f-ef9c73614847" />
+### `admin/images/`
+Images used by the admin UI.
 
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/ca43a6d3-c2fa-4dd6-9297-30ee20820150" />
+Examples:
+- `Main_logo.png`: admin logo
+- `user.png`: admin user avatar
+- `favicon.ico`: admin favicon
+- `icons/`: admin icon font assets
+- `jquery-ui/`: small supporting images referenced by admin CSS
 
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/7028bde9-7a1d-4150-ab0e-629ed1f02a94" />
+### `admin/include/`
+Shared admin PHP includes.
 
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/d4a91d20-dfdf-4cfb-ace0-2acaf10bf2ce" />
+Files:
+- `admin_session.php`: starts the admin-only named PHP session
+- `config.php`: admin database connection
+- `header.php`: top navbar/header
+- `sidebar.php`: admin sidebar navigation
+- `footer.php`: footer partial
+- `record.php`: shared record helper include
 
-* Admin Main Page
+### `admin/phpmailer/`
+Mailer library used by some admin email flows.
 
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/74395633-eab3-4bd2-a76c-38dc2e9a90ab" />
+### `admin/productimages/`
+Uploaded product image storage, grouped by product id.
 
-<img width="415" height="226" alt="Image" src="https://github.com/user-attachments/assets/4dc45737-bd58-4a8c-803c-33f426468c49" />
+### `admin/scripts/`
+Admin JavaScript dependencies still used by the admin pages.
 
----
+Examples:
+- jQuery
+- jQuery UI
+- DataTables
+- Flot
 
-## 🔍 Future Improvements
-* Payment gateway integration (e.g. Stripe / FPX)
-* Product recommendation system
-* Wishlist feature
-* User reviews and ratings
+### `admin/tcpdf/`
+PDF generation library used for admin reporting/export flows.
 
----
+### `assets/`
+Main storefront asset folder.
 
-## 📚 Conclusion
-This project demonstrates a complete end-to-end e-commerce system using **PHP, MySQL, HTML, CSS, and JavaScript**, combining frontend, backend, and database technologies to deliver a functional online furniture store.
+### `assets/css/`
+Live customer-facing CSS bundle.
+
+Files:
+- `bootstrap.min.css`: storefront Bootstrap
+- `main.css`: main storefront styles
+- `orange.css`: storefront color theme
+- `trackorder.css`: customer order-tracking page styles
+- `wallet.css`: wallet page styles
+- `sort.css`: category/search sorting styles
+- `password-validation-message.css`: password validation UI
+- `card_payment.css`: payment card UI styles
+- `loader.css`: loader styles
+- third-party support CSS such as `lightbox.css`, `owl.carousel.css`, `rateit.css`
+
+### `assets/fonts/`
+Font files used by storefront CSS.
+
+### `assets/images/`
+Storefront images and organized image groups.
+
+Subfolders:
+- `banners/`: category and promotional banners
+- `brands/`: brand logos used by the storefront brand carousel
+- `logo/`: primary storefront logo
+- `owl-carousel/`: carousel helper images
+- `sliders/`: homepage/hero slider images
+
+### `assets/js/`
+Storefront JavaScript bundle.
+
+Examples:
+- `scripts.js`: main storefront JS behavior
+- `bootstrap.min.js`
+- `owl.carousel.min.js`
+- `lightbox.min.js`
+- `wow.min.js`
+- `statecitylist.js`
+- validation helpers such as `password-validation-my-acc.js`
+
+### `assets/less/`
+LESS source files that mirror much of the storefront styling structure.
+
+### `datepicker164/`
+Standalone Bootstrap datepicker package used by parts of the project.
+
+### `includes/`
+Shared storefront PHP includes.
+
+Files:
+- `customer_session.php`: starts the customer-only named PHP session
+- `config.php`: storefront/shared database connection
+- `top-header.php`: top account/contact header
+- `main-header.php`: main header and cart/search section
+- `menu-bar.php`: main navigation bar
+- `footer.php`: storefront footer
+- `side-menu.php`: category side navigation
+- `myaccount-sidebar.php`: customer account sidebar
+- `brands-slider.php`: shared brand-carousel partial
+
+### `layouts/`
+Layout-related supporting files kept from the project structure. This folder is small and not the main runtime source of templates.
+
+### `sendemail/`
+Mailer library/package used by storefront email flows.
+
+### `vendor/`
+Composer-managed PHP dependencies. (for auto-load mailer username and password)
+
+### Root `*.php` files
+Most customer-facing pages live at the project root.
+
+Examples:
+- `index.php`: homepage
+- `login.php`: customer login/register
+- `my-cart.php`: shopping cart
+- `product-details.php`: product detail page
+- `track-order.php`: customer order detail/tracking page
+- `wallet.php`: wallet page
+
+### `shopping.sql`
+Main SQL dump for the application database.
+
+### `.env`
+Environment values used by mail-related features.
+
+## Session Separation
+Customer and admin logins now use different PHP session names, so both can stay logged in in the same browser:
+
+- customer session bootstrap: `includes/customer_session.php`
+- admin session bootstrap: `admin/include/admin_session.php`
+
+## Notes
+- The storefront and admin panel intentionally use different asset systems.
+- `admin/` still relies on its own older Bootstrap/CSS/script bundle.
+- `assets/` is the canonical asset tree for the storefront.
+- Product images are runtime content and should be treated carefully during cleanup or deployment.
+
+## Recommended Entry URLs
+- Customer site: `http://localhost/Full-Stack-Furniture-E-Commerce-Web-App/index.php`
+- Admin site: `http://localhost/Full-Stack-Furniture-E-Commerce-Web-App/admin/index.php`
+

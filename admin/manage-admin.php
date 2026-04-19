@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/include/admin_session.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,6 +7,11 @@ include ('include/config.php');
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+
+require '../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 require 'phpmailer/src/Exception.php';
 require 'phpmailer/src/PHPMailer.php';
@@ -75,8 +80,8 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'SuperAdmin') {
                 $mail->Host = 'smtp.gmail.com';
                 $mail->SMTPAuth = TRUE;
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Username = "ofurstore@gmail.com";
-                $mail->Password = "weqr glie hrju pxtp";
+                $mail->Username = $_ENV['MAIL_USERNAME'];
+                $mail->Password = $_ENV['MAIL_PASSWORD'];
                 $mail->Port = 587;
                 $mail->setFrom("ofurstore@gmail.com", "Online Furniture Store | Admin");
                 $mail->addAddress($email);
@@ -188,7 +193,7 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'SuperAdmin') {
         <link type="text/css" href="css/theme.css" rel="stylesheet">
         <link type="text/css" href="images/icons/css/font-awesome.css" rel="stylesheet">
         <link type="text/css" href="css/loader.css" rel="stylesheet">
-        <link rel="shortcut icon" href="assets/images/favicon.ico">
+        <link rel="shortcut icon" href="images/favicon.ico">
         <link type="text/css" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600'
             rel='stylesheet'>
         <style>

@@ -20,7 +20,7 @@
 <div class="logo">
 	<a href="index.php">
 		
-		<img id="main-logo" src="img/main_logo.png" alt="Online Furniture Store" style="display: block;margin-left: auto;margin-right: auto;width: 50%;">
+		<img id="main-logo" src="assets/images/logo/main-logo.png" alt="Online Furniture Store" style="display: block;margin-left: auto;margin-right: auto;width: 50%;">
 
 	</a>
 </div>		

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/include/admin_session.php';
 error_reporting(0);
 include ('include/config.php');
 use PHPMailer\PHPMailer\PHPMailer;
@@ -161,7 +161,7 @@ if (isset($_POST['save'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OFS | Admin Login Portal</title>
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
     <link type="text/css" href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" href="css/loader.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/4a07c4d5e3.js" crossorigin="anonymous"></script>
@@ -173,7 +173,7 @@ if (isset($_POST['save'])) {
             <header class="header">
                 <div class="logo">
                     <a href="index.html">
-                        <img src="bootstrap/img/Main_logo.png" alt="Logo">
+                        <img src="images/Main_logo.png" alt="Logo">
                     </a>
                 </div>
                 <a href="http://localhost/shopping/final-year-project-1/" class="back-button">Client Side</a>

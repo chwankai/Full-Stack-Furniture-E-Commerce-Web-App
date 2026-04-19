@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0"></script>
     <script src="https://kit.fontawesome.com/4a07c4d5e3.js" crossorigin="anonymous"></script>
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="images/favicon.ico">
     <style>
         .dashboard {
             display: flex;

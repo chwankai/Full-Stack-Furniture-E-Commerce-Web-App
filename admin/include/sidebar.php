@@ -1,5 +1,5 @@
 <?php
-	session_start();
+	require_once __DIR__ . '/admin_session.php';
 ?>
 <div class="span3">
 					<div class="sidebar">

@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -59,7 +59,6 @@ if (strlen($_SESSION['login']) == 0) {
         <link href="assets/css/lightbox.css" rel="stylesheet">
         <link rel="stylesheet" href="assets/css/animate.min.css">
         <link rel="stylesheet" href="assets/css/rateit.css">
-        <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
         <link rel="stylesheet" href="assets/css/wallet.css">
         <link rel="stylesheet" href="assets/css/config.css">
 
@@ -147,7 +146,7 @@ if (strlen($_SESSION['login']) == 0) {
                                                     SELECT users.balance as balance FROM users WHERE id = '" . mysqli_real_escape_string($con, $_SESSION['id']) . "'");
                                                     $row=mysqli_fetch_array($query);
                                                     ?>
-                                                    <h2>RM <?php echo $row['balance']; ?></h2>
+                                                    <h2>RM <?php echo $row['balance'] ?? '0'; ?></h2>
                                                 </div>
                                                 <div class="wallet-buttons">
                                                     <button class="topup" onclick="reloadBtn()">Reload</button>
@@ -259,14 +258,11 @@ if (strlen($_SESSION['login']) == 0) {
         </div>
             <script src="assets/js/jquery-1.11.1.min.js"></script>
             <script src="assets/js/bootstrap.min.js"></script>
-            <script src="assets/js/bootstrap-hover-dropdown.min.js"></script>
             <script src="assets/js/owl.carousel.min.js"></script>
             <script src="assets/js/echo.min.js"></script>
             <script src="assets/js/jquery.easing-1.3.min.js"></script>
-            <script src="assets/js/bootstrap-slider.min.js"></script>
             <script src="assets/js/jquery.rateit.min.js"></script>
             <script type="text/javascript" src="assets/js/lightbox.min.js"></script>
-            <script src="assets/js/bootstrap-select.min.js"></script>
             <script src="assets/js/wow.min.js"></script>
             <script src="assets/js/scripts.js"></script>
             <script src="assets/js/password-validation-my-acc.js"></script>

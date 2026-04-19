@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/customer_session.php';
 
 if(isset($_POST['submit'])) {
     include ('includes\config.php');

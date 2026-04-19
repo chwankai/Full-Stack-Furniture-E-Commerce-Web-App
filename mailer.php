@@ -1,8 +1,11 @@
 <?php
 
+require 'vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 require 'sendemail/src/Exception.php';
 require 'sendemail/src/PHPMailer.php';
@@ -18,8 +21,8 @@ $mail->SMTPAuth = true;
 $mail->Host = "smtp.gmail.com";
 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port = 587;
-$mail->Username = "ofurstore@gmail.com";//sender email,can be change to your own email
-$mail->Password = "";//app password need to be request in google manage,two step verification need to be on 
+$mail->Username = $_ENV['MAIL_USERNAME'];
+$mail->Password = $_ENV['MAIL_PASSWORD'];
 
 $mail->isHtml(true);
 

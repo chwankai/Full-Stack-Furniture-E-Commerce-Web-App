@@ -18,20 +18,17 @@ include ('includes/config.php');
   <meta name="robots" content="all">
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/orange.css">
   <link rel="stylesheet" href="assets/css/owl.carousel.css">
   <link rel="stylesheet" href="assets/css/owl.transitions.css">
   <link href="assets/css/lightbox.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/rateit.css">
-  <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
   <link rel="stylesheet" href="assets/css/config.css">
 
   <link rel="stylesheet" href="assets/css/font-awesome.min.css">
   <link href='http://fonts.googleapis.com/css?family=Roboto:300,400,500,700' rel='stylesheet' type='text/css'>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
 
   <!-- Favicon -->
@@ -253,7 +250,7 @@ include ('includes/config.php');
     <section class="banner">
       <div class="container-fluid bg-1 text-center">
         <h1 class="margin">ABOUT US</h1>
-        <img src="img/Main_logo.png" style="display:inline" alt="main-logo" width="550" height="200">
+        <img src="assets/images/logo/main-logo.png" style="display:inline" alt="main-logo" width="550" height="200">
         <h4 style="padding:15px;" class="slogan">We offer a wide range of high-quality furniture for your home and
           office. Shop with us and transform your living spaces into beautiful and comfortable environments.</h3>
           <div class="info-section">
