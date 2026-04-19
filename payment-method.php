@@ -9,7 +9,7 @@ if (strlen($_SESSION['login']) == 0) {
 	header('location:login.php');
 } else {
 	date_default_timezone_set('Asia/Kuala_Lumpur');
-	// test
+	
 	if (isset($_POST['submit'])) {
 		// Set variables
 		$card_number = isset($_POST['saved_card']) ? $_POST['saved_card'] : $_POST['card_number'];
