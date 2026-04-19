@@ -264,7 +264,7 @@ if (strlen($_SESSION['login']) == 0) {
 													<div class="fvrt">
 														<input type="checkbox" name="favourite" id="favourite"
 															class="favourite">
-														<label for="favourite"> Save card information</label>
+														<label for="favourite">Save card information</label>
 													</div>
 													<br>
 													<!-- Recaptcha here -->
