@@ -221,7 +221,7 @@ if (strlen($_SESSION['login']) == 0) {
 												<br><br>
 											</div>
 											<!-- Modal Popup -->
-											<div id="loaderModal" class="modal fade" role="dialog">
+											<div id="loaderModal" class="modal fade" data-backdrop="static" data-keyboard="false">
 												<div class="modal-dialog">
 													<div class="modal-content">
 														<div class="modal-body">
