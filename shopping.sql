@@ -49,29 +49,6 @@ INSERT INTO `admin` (`id`, `username`, `password`, `creationDate`, `updationDate
 -- --------------------------------------------------------
 
 --
--- Table structure for table `card_information`
---
-
-CREATE TABLE `card_information` (
-  `card_id` int(11) NOT NULL,
-  `cust_id` int(11) NOT NULL,
-  `card_number` varchar(20) NOT NULL,
-  `exp_date` varchar(25) NOT NULL,
-  `cvv` varchar(4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `card_information`
---
-
-INSERT INTO `card_information` (`card_id`, `cust_id`, `card_number`, `exp_date`, `cvv`) VALUES
-(11001, 9001, '4848 6000 5430 2139', '2026-08', '963'),
-(11002, 9001, '3333 6758 3204 8299', '2028-07', '963'),
-(11003, 9002, '5743 8204 8572 0387', '2030-06', '963');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `category`
 --
 
@@ -94,28 +71,6 @@ INSERT INTO `category` (`id`, `categoryName`, `categoryDescription`, `creationDa
 (2003, 'Dining Room', 'dining table, chair', '2024-01-24 11:19:54', '', 'Active'),
 (2004, 'Office', 'office table', '2024-01-24 11:20:54', '', 'Active'),
 (2005, 'Hallway and Entry', 'shoes rack, hallway benchees', '2024-01-24 11:20:54', '', 'Active');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `old_card_information`
---
-
-CREATE TABLE `old_card_information` (
-  `card_id` int(5) NOT NULL,
-  `cust_id` int(5) NOT NULL,
-  `card_number` varchar(25) NOT NULL,
-  `exp_date` varchar(25) NOT NULL,
-  `cvv` varchar(5) NOT NULL,
-  `action` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `old_card_information`
---
-
-INSERT INTO `old_card_information` (`card_id`, `cust_id`, `card_number`, `exp_date`, `cvv`, `action`) VALUES
-(11001, 9001, '4848 6000 5430 2139', '2026-07', '123', 'UPDATE');
 
 -- --------------------------------------------------------
 
@@ -154,6 +109,7 @@ CREATE TABLE `orders` (
   `userId` int(11) DEFAULT NULL,
   `orderDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `paymentMethod` varchar(50) DEFAULT NULL,
+  `payment_reference` varchar(255) DEFAULT NULL,
   `orderStatus` varchar(55) DEFAULT NULL,
   `subtotal` float(10,2) DEFAULT 0.00,
   `shippingCharge` float(10,2) DEFAULT 0.00,
@@ -170,12 +126,12 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `userId`, `orderDate`, `paymentMethod`, `orderStatus`, `subtotal`, `shippingCharge`, `grandtotal`, `shippingReceiver`, `shippingPhone`, `shippingAddress`, `billingReceiver`, `billingPhone`, `billingAddress`) VALUES
-(3001, 9001, '2024-06-17 11:15:44', 'Debit / Credit Card', 'Delivered', 189.98, 100.00, 289.98, 'Chwan Kai', '+60167406628', 'No.1, Jalan MMU, Ayer Keroh, Alor Gajah, Melaka, 51400', 'Chwan Kai', '+60167406628', 'No.15, Jalan Bestari 24, Johor Bahru, Johor, 81300'),
-(3002, 9001, '2024-06-17 11:17:13', 'Debit / Credit Card', 'In Process', 39.99, 150.00, 189.99, 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000', 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000'),
-(3003, 9001, '2024-06-17 11:18:06', 'e-Wallet', 'Order Placed', 129.99, 150.00, 279.99, 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000', 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000'),
-(3004, 9001, '2024-06-17 11:19:00', NULL, NULL, 79.99, 200.00, 279.99, 'Muthu', '+60167403399', '3, Jalan Sarawak 2, Bintulu, Sarawak, 67059', 'Muthu', '+60167403399', '3, Jalan Sarawak 2, Bintulu, Sarawak, 67059'),
-(3005, 9002, '2024-06-17 11:28:31', 'Debit / Credit Card', 'Cancelled', 119.98, 150.00, 269.98, 'CK Test account', '+601111111111', 'Jalan Maluri, Taman Conot, Kajang, Selangor, 28304', 'CK Test account', '+601111111111', 'Jalan Maluri, Taman Conot, Kajang, Selangor, 28304');
+INSERT INTO `orders` (`id`, `userId`, `orderDate`, `paymentMethod`, `payment_reference`, `orderStatus`, `subtotal`, `shippingCharge`, `grandtotal`, `shippingReceiver`, `shippingPhone`, `shippingAddress`, `billingReceiver`, `billingPhone`, `billingAddress`) VALUES
+(3001, 9001, '2024-06-17 11:15:44', 'Stripe Checkout', NULL, 'Delivered', 189.98, 100.00, 289.98, 'Chwan Kai', '+60167406628', 'No.1, Jalan MMU, Ayer Keroh, Alor Gajah, Melaka, 51400', 'Chwan Kai', '+60167406628', 'No.15, Jalan Bestari 24, Johor Bahru, Johor, 81300'),
+(3002, 9001, '2024-06-17 11:17:13', 'Stripe Checkout', NULL, 'In Process', 39.99, 150.00, 189.99, 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000', 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000'),
+(3003, 9001, '2024-06-17 11:18:06', 'e-Wallet', NULL, 'Order Placed', 129.99, 150.00, 279.99, 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000', 'Abu Bakar', '+60167403366', 'Wisma KL, Jalan Hang Jebat, Kuala Lumpur, Kuala Lumpur, 13000'),
+(3004, 9001, '2024-06-17 11:19:00', NULL, NULL, NULL, 79.99, 200.00, 279.99, 'Muthu', '+60167403399', '3, Jalan Sarawak 2, Bintulu, Sarawak, 67059', 'Muthu', '+60167403399', '3, Jalan Sarawak 2, Bintulu, Sarawak, 67059'),
+(3005, 9002, '2024-06-17 11:28:31', 'Stripe Checkout', NULL, 'Cancelled', 119.98, 150.00, 269.98, 'CK Test account', '+601111111111', 'Jalan Maluri, Taman Conot, Kajang, Selangor, 28304', 'CK Test account', '+601111111111', 'Jalan Maluri, Taman Conot, Kajang, Selangor, 28304');
 
 -- --------------------------------------------------------
 
@@ -404,6 +360,7 @@ CREATE TABLE `transaction` (
   `user_id` int(11) DEFAULT NULL,
   `action` varchar(255) DEFAULT NULL,
   `amount` float(10,2) DEFAULT 0.00,
+  `transaction_ref` varchar(255) DEFAULT NULL,
   `transaction_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -411,10 +368,10 @@ CREATE TABLE `transaction` (
 -- Dumping data for table `transaction`
 --
 
-INSERT INTO `transaction` (`id`, `order_id`, `user_id`, `action`, `amount`, `transaction_date`) VALUES
-(12001, NULL, 9001, 'Reload', 500.00, '2024-06-17 11:17:30'),
-(12002, NULL, 9001, 'Withdraw', 100.00, '2024-06-17 11:17:37'),
-(12003, 3003, 9001, 'Pay', 279.99, '2024-06-17 11:18:06');
+INSERT INTO `transaction` (`id`, `order_id`, `user_id`, `action`, `amount`, `transaction_ref`, `transaction_date`) VALUES
+(12001, NULL, 9001, 'Reload', 500.00, NULL, '2024-06-17 11:17:30'),
+(12002, NULL, 9001, 'Withdraw', 100.00, NULL, '2024-06-17 11:17:37'),
+(12003, 3003, 9001, 'Pay', 279.99, NULL, '2024-06-17 11:18:06');
 
 -- --------------------------------------------------------
 
@@ -511,12 +468,6 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `card_information`
---
-ALTER TABLE `card_information`
-  ADD PRIMARY KEY (`card_id`);
-
---
 -- Indexes for table `category`
 --
 ALTER TABLE `category`
@@ -532,7 +483,8 @@ ALTER TABLE `orderdetails`
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_orders_payment_reference` (`payment_reference`);
 
 --
 -- Indexes for table `ordertrackhistory`
@@ -562,7 +514,8 @@ ALTER TABLE `subcategory`
 -- Indexes for table `transaction`
 --
 ALTER TABLE `transaction`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uniq_transaction_ref` (`transaction_ref`);
 
 --
 -- Indexes for table `userlog`
@@ -592,12 +545,6 @@ ALTER TABLE `wishlist`
 --
 ALTER TABLE `admin`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1003;
-
---
--- AUTO_INCREMENT for table `card_information`
---
-ALTER TABLE `card_information`
-  MODIFY `card_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11004;
 
 --
 -- AUTO_INCREMENT for table `category`

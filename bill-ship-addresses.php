@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/customer_session.php';
 //error_reporting(0);
-include ('includes/config.php');
+include('includes/config.php');
 if (strlen($_SESSION['login']) == 0) {
 	header('location:.php');
 } else {
@@ -64,11 +64,11 @@ if (strlen($_SESSION['login']) == 0) {
 		<header class="header-style-1">
 
 			<!-- ============================================== TOP MENU ============================================== -->
-			<?php include ('includes/top-header.php'); ?>
+			<?php include('includes/top-header.php'); ?>
 			<!-- ============================================== TOP MENU : END ============================================== -->
-			<?php include ('includes/main-header.php'); ?>
+			<?php include('includes/main-header.php'); ?>
 			<!-- ============================================== NAVBAR ============================================== -->
-			<?php include ('includes/menu-bar.php'); ?>
+			<?php include('includes/menu-bar.php'); ?>
 			<!-- ============================================== NAVBAR : END ============================================== -->
 
 		</header>
@@ -92,7 +92,92 @@ if (strlen($_SESSION['login']) == 0) {
 							<div class="panel-group checkout-steps" id="accordion">
 								<!-- checkout-step-01  -->
 								<div class="panel panel-default checkout-step-01">
+									<div class="panel-heading">
+										<h4 class="unicase-checkout-title">
+											<a data-toggle="collapse" class="collapsed" data-parent="#accordion"
+												href="#collapseTwo">
+												<span>1</span>Shipping Address
+											</a>
+										</h4>
+									</div>
+									<div id="collapseTwo" class="panel-collapse collapse">
+										<div class="panel-body">
 
+											<?php
+											$query = mysqli_query($con, "select * from users where id='" . $_SESSION['id'] . "'");
+											while ($row = mysqli_fetch_array($query)) {
+												?>
+
+												<form class="register-form" role="form" method="post">
+													<div class="form-group">
+														<label class="info-title" for="Shipping Address">Shipping
+															Address<span>*</span></label>
+														<textarea class="form-control unicase-form-control text-input"
+															name="shippingaddress"
+															required="required"><?php echo $row['shippingAddress']; ?></textarea>
+													</div>
+
+													<div class="form-group">
+														<label class="info-title" for="Billing State ">Shipping State
+															<span>*</span></label>
+														<select type="text" class="form-control unicase-form-control text-input"
+															id="shippingstate" name="shippingstate"
+															onchange="print_city('shippingcity', this.value);" required>
+															<option value="">Select State</option>
+															<option value="Johor" <?php echo ($selectedshippingState == 'Johor') ? 'selected' : ''; ?>>Johor</option>
+															<option value="Kedah" <?php echo ($selectedshippingState == 'Kedah') ? 'selected' : ''; ?>>Kedah</option>
+															<option value="Kelantan" <?php echo ($selectedshippingState == 'Kelantan') ? 'selected' : ''; ?>>
+																Kelantan</option>
+															<option value="Kuala Lumpur" <?php echo ($selectedshippingState == 'Kuala Lumpur') ? 'selected' : ''; ?>>
+																Kuala Lumpur</option>
+															<option value="Melaka" <?php echo ($selectedshippingState == 'Melaka') ? 'selected' : ''; ?>>Melaka</option>
+															<option value="Negeri Sembilan" <?php echo ($selectedshippingState == 'Negeri Sembilan') ? 'selected' : ''; ?>>Negeri Sembilan</option>
+															<option value="Pahang" <?php echo ($selectedshippingState == 'Pahang') ? 'selected' : ''; ?>>Pahang</option>
+															<option value="Perak" <?php echo ($selectedshippingState == 'Perak') ? 'selected' : ''; ?>>Perak</option>
+															<option value="Perlis" <?php echo ($selectedshippingState == 'Perlis') ? 'selected' : ''; ?>>Perlis</option>
+															<option value="Pulau Pinang" <?php echo ($selectedshippingState == 'Pulau Pinang') ? 'selected' : ''; ?>>
+																Pulau Pinang</option>
+															<option value="Sabah" <?php echo ($selectedshippingState == 'Sabah') ? 'selected' : ''; ?>>Sabah</option>
+															<option value="Sarawak" <?php echo ($selectedshippingState == 'Sarawak') ? 'selected' : ''; ?>>
+																Sarawak</option>
+															<option value="Selangor" <?php echo ($selectedshippingState == 'Selangor') ? 'selected' : ''; ?>>
+																Selangor</option>
+															<option value="Terengganu" <?php echo ($selectedshippingState == 'Terengganu') ? 'selected' : ''; ?>>
+																Terengganu</option>
+														</select>
+													</div>
+													<div class="form-group">
+														<label class="info-title" for="Billing City">Shipping City
+															<span>*</span></label>
+														<select type="text" class="form-control unicase-form-control text-input"
+															id="shippingcity" name="shippingcity" required>
+															<option value="<?php echo $row['shippingCity']; ?>">
+																<?php echo $row['shippingCity']; ?>
+															</option>
+															<option value=""></option>
+														</select>
+													</div>
+													<div class="form-group">
+														<label class="info-title" for="Billing Pincode">Shipping Postcode
+															<span>*</span></label>
+														<input type="text" class="form-control unicase-form-control text-input"
+															id="shippingpincode" name="shippingpincode" required="required"
+															value="<?php echo $row['shippingPincode']; ?>" maxlength="5"
+															minlength="5" pattern="\d{5}" title="Postcode only can be numbers">
+													</div>
+
+
+													<button type="submit" name="shipupdate"
+														class="btn-upper btn btn-primary checkout-page-button">Update</button>
+												</form>
+											<?php } ?>
+										</div>
+									</div>
+
+								</div>
+								<!-- checkout-step-01  -->
+								<!-- checkout-step-02  -->
+								<div class="panel panel-default checkout-step-02">
 									<!-- panel-heading -->
 									<div class="panel-heading">
 										<h4 class="unicase-checkout-title">
@@ -164,7 +249,8 @@ if (strlen($_SESSION['login']) == 0) {
 																<select class="form-control unicase-form-control text-input"
 																	id="billingcity" name="billingcity" required>
 																	<option value="<?php echo $row['billingCity']; ?>">
-																		<?php echo $row['billingCity']; ?></option>
+																		<?php echo $row['billingCity']; ?>
+																	</option>
 																	<option value="">Select City</option>
 																</select>
 															</div>
@@ -192,100 +278,16 @@ if (strlen($_SESSION['login']) == 0) {
 										<!-- panel-body  -->
 									</div><!-- row -->
 								</div>
-								<!-- checkout-step-01  -->
-								<!-- checkout-step-02  -->
-								<div class="panel panel-default checkout-step-02">
-									<div class="panel-heading">
-										<h4 class="unicase-checkout-title">
-											<a data-toggle="collapse" class="collapsed" data-parent="#accordion"
-												href="#collapseTwo">
-												<span>2</span>Shipping Address
-											</a>
-										</h4>
-									</div>
-									<div id="collapseTwo" class="panel-collapse collapse">
-										<div class="panel-body">
-
-											<?php
-											$query = mysqli_query($con, "select * from users where id='" . $_SESSION['id'] . "'");
-											while ($row = mysqli_fetch_array($query)) {
-												?>
-
-												<form class="register-form" role="form" method="post">
-													<div class="form-group">
-														<label class="info-title" for="Shipping Address">Shipping
-															Address<span>*</span></label>
-														<textarea class="form-control unicase-form-control text-input"
-															name="shippingaddress"
-															required="required"><?php echo $row['shippingAddress']; ?></textarea>
-													</div>
-
-													<div class="form-group">
-														<label class="info-title" for="Billing State ">Shipping State
-															<span>*</span></label>
-														<select type="text" class="form-control unicase-form-control text-input"
-															id="shippingstate" name="shippingstate"
-															onchange="print_city('shippingcity', this.value);" required>
-															<option value="">Select State</option>
-															<option value="Johor" <?php echo ($selectedshippingState == 'Johor') ? 'selected' : ''; ?>>Johor</option>
-															<option value="Kedah" <?php echo ($selectedshippingState == 'Kedah') ? 'selected' : ''; ?>>Kedah</option>
-															<option value="Kelantan" <?php echo ($selectedshippingState == 'Kelantan') ? 'selected' : ''; ?>>
-																Kelantan</option>
-															<option value="Kuala Lumpur" <?php echo ($selectedshippingState == 'Kuala Lumpur') ? 'selected' : ''; ?>>
-																Kuala Lumpur</option>
-															<option value="Melaka" <?php echo ($selectedshippingState == 'Melaka') ? 'selected' : ''; ?>>Melaka</option>
-															<option value="Negeri Sembilan" <?php echo ($selectedshippingState == 'Negeri Sembilan') ? 'selected' : ''; ?>>Negeri Sembilan</option>
-															<option value="Pahang" <?php echo ($selectedshippingState == 'Pahang') ? 'selected' : ''; ?>>Pahang</option>
-															<option value="Perak" <?php echo ($selectedshippingState == 'Perak') ? 'selected' : ''; ?>>Perak</option>
-															<option value="Perlis" <?php echo ($selectedshippingState == 'Perlis') ? 'selected' : ''; ?>>Perlis</option>
-															<option value="Pulau Pinang" <?php echo ($selectedshippingState == 'Pulau Pinang') ? 'selected' : ''; ?>>
-																Pulau Pinang</option>
-															<option value="Sabah" <?php echo ($selectedshippingState == 'Sabah') ? 'selected' : ''; ?>>Sabah</option>
-															<option value="Sarawak" <?php echo ($selectedshippingState == 'Sarawak') ? 'selected' : ''; ?>>
-																Sarawak</option>
-															<option value="Selangor" <?php echo ($selectedshippingState == 'Selangor') ? 'selected' : ''; ?>>
-																Selangor</option>
-															<option value="Terengganu" <?php echo ($selectedshippingState == 'Terengganu') ? 'selected' : ''; ?>>
-																Terengganu</option>
-														</select>
-													</div>
-													<div class="form-group">
-														<label class="info-title" for="Billing City">Shipping City
-															<span>*</span></label>
-														<select type="text" class="form-control unicase-form-control text-input"
-															id="shippingcity" name="shippingcity" required>
-															<option value="<?php echo $row['shippingCity']; ?>">
-																<?php echo $row['shippingCity']; ?></option>
-															<option value=""></option>
-														</select>
-													</div>
-													<div class="form-group">
-														<label class="info-title" for="Billing Pincode">Shipping Postcode
-															<span>*</span></label>
-														<input type="text" class="form-control unicase-form-control text-input"
-															id="shippingpincode" name="shippingpincode" required="required"
-															value="<?php echo $row['shippingPincode']; ?>" maxlength="5"
-															minlength="5" pattern="\d{5}" title="Postcode only can be numbers">
-													</div>
-
-
-													<button type="submit" name="shipupdate"
-														class="btn-upper btn btn-primary checkout-page-button">Update</button>
-												</form>
-											<?php } ?>
-										</div>
-									</div>
-								</div>
 							</div><!-- /.checkout-steps -->
 						</div>
-						<?php include ('includes/myaccount-sidebar.php'); ?>
+						<?php include('includes/myaccount-sidebar.php'); ?>
 					</div><!-- /.row -->
 				</div><!-- /.checkout-box -->
-				<?php include ('includes/brands-slider.php'); ?>
+				<?php include('includes/brands-slider.php'); ?>
 
 			</div>
 		</div>
-		<?php include ('includes/footer.php'); ?>
+		<?php include('includes/footer.php'); ?>
 		<script src="assets/js/jquery-1.11.1.min.js"></script>
 
 		<script src="assets/js/bootstrap.min.js"></script>

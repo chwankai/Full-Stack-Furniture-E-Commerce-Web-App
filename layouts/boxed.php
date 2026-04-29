@@ -10,4 +10,4 @@
 			<?php require UC_ROOT.'/parts/section/footer.php'; ?>
 		</div><!-- /.wrapper-inner -->
 	</div><!-- /.box -->
-</div><!-- /.wrapper -->
+</div>/.wrapper

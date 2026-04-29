@@ -154,7 +154,7 @@ WHERE
         <div class="container">
             <div class="header">
                 <a href="http://localhost/final-year-project/index.php">
-                    <img src="https://i.ibb.co/2Ymx8Lc/Main-logo.png" alt="Main-logo" border="0">
+                    <img src="https://postimg.cc/Wtcfcyhj" alt="Main-logo" border="0">
                 </a>
             </div>
             <div class="content">
@@ -210,7 +210,7 @@ WHERE
                 <p>Best regards,<br>Online Furniture Store</p>
             </div>
             <div class="footer">
-                <p>&copy; 2024 Online Furniture Store. All rights reserved.</p>
+                <p>&copy; 2026 Online Furniture Store. All rights reserved.</p>
             </div>
         </div>
     </body>
