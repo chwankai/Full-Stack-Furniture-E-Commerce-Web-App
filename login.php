@@ -1,7 +1,13 @@
 <?php
 require_once __DIR__ . '/includes/customer_session.php';
 error_reporting(0);
-include ('includes/config.php');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+// include ('includes/config.php');
+require_once __DIR__ . "/includes/config.php";
+// google OAuth
+$loginUrl = $client->createAuthUrl();
 // php Code  for user Registration
 if (isset($_POST['submit'])) {
 	$name = $_POST['fullname'];
@@ -70,6 +76,7 @@ if (isset($_POST['login'])) {
 
 	<!-- Customizable CSS -->
 	<link rel="stylesheet" href="assets/css/main.css">
+	<link rel="stylesheet" href="assets/css/GAuth.css">
 	<link rel="stylesheet" href="assets/css/orange.css">
 	<link rel="stylesheet" href="assets/css/owl.carousel.css">
 	<link rel="stylesheet" href="assets/css/owl.transitions.css">
@@ -171,11 +178,11 @@ if (isset($_POST['login'])) {
 	<header class="header-style-1">
 
 		<!-- ============================================== TOP MENU ============================================== -->
-		<?php include ('includes/top-header.php'); ?>
+		<?php include('includes/top-header.php'); ?>
 		<!-- ============================================== TOP MENU : END ============================================== -->
-		<?php include ('includes/main-header.php'); ?>
+		<?php include('includes/main-header.php'); ?>
 		<!-- ============================================== NAVBAR ============================================== -->
-		<?php include ('includes/menu-bar.php'); ?>
+		<?php include('includes/menu-bar.php'); ?>
 		<!-- ============================================== NAVBAR : END ============================================== -->
 
 	</header>
@@ -229,9 +236,47 @@ if (isset($_POST['login'])) {
 							<button type="submit" class="btn-upper btn btn-primary checkout-page-button"
 								name="login">Login</button>
 						</form>
+
+						<br>
+
+						<a href="<?= htmlspecialchars($loginUrl) ?>" style="text-decoration:none;">
+						<button type="button" class="gsi-material-button">
+
+							<div class="gsi-material-button-state"></div>
+
+							<div class="gsi-material-button-content-wrapper">
+
+								<div class="gsi-material-button-icon">
+									<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
+										style="display:block;">
+
+										<path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0
+			14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+
+										<path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94
+			c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6C44.4 36.73 47 30.55 47 24.55z" />
+
+										<path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59
+			l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+
+										<path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6
+			c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91
+			l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+									</svg>
+								</div>
+
+								<span class="gsi-material-button-contents">
+									Sign in with Google
+								</span>
+
+							</div>
+
+						</button>
+					</a>
+
 					</div>
 					<!-- Sign-in -->
-
+					
 					<!-- create a new account -->
 					<div class="col-md-6 col-sm-6 create-new-account">
 						<h4 class="checkout-subtitle">Create a new account</h4>
@@ -311,10 +356,10 @@ if (isset($_POST['login'])) {
 					<!-- create a new account -->
 				</div><!-- /.row -->
 			</div>
-			<?php include ('includes/brands-slider.php'); ?>
+			<?php include('includes/brands-slider.php'); ?>
 		</div>
 	</div>
-	<?php include ('includes/footer.php'); ?>
+	<?php include('includes/footer.php'); ?>
 	<script src="assets/js/jquery-1.11.1.min.js"></script>
 	<script src="assets/js/bootstrap.min.js"></script>
 	<script src="assets/js/owl.carousel.min.js"></script>
