@@ -24,6 +24,7 @@ if (strlen($_SESSION['login']) == 0) {
 	$shipping_fee = calculateShippingFee($con, $shipping_state, $subtotal);
 	$grandtotal = $subtotal + $shipping_fee;
 
+	//
 	if (isset($_POST['submit'])) {
 		if (!empty($_SESSION['cart'])) {
 			foreach ($_POST['quantity'] as $key => $val) {
@@ -56,11 +57,11 @@ if (strlen($_SESSION['login']) == 0) {
 		$grandtotal = $subtotal + $shipping_fee;
 	}
 
-	// Process ordersubmit action
-	if (isset($_POST['ordersubmit'])) {
-		if (strlen($_SESSION['login']) == 0) {
-			header('location:login.php');
-		} else {
+	// checkout order - ordersubmit action
+		if (isset($_POST['ordersubmit'])) {
+			if (strlen($_SESSION['login']) == 0) {
+				header('location:login.php');
+			} else {
 			$quantity = $_POST['quantity'];
 			$pdd = $_SESSION['pid'];
 			$value = array_combine($pdd, $quantity);
@@ -86,81 +87,131 @@ if (strlen($_SESSION['login']) == 0) {
 			$billingPincode = $_POST['billingpincode'];
 
 			$fullShippingAddress = $shippingAddress . ', ' . $shippingCity . ', ' . $shippingState . ', ' . $shippingPincode;
-			$fullBillingAddress = $billingAddress . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingPincode;
+				$fullBillingAddress = $billingAddress . ', ' . $billingCity . ', ' . $billingState . ', ' . $billingPincode;
 
-			// Initialize an array to keep track of products to remove from the cart
-			$productsToRemoveFromCart = [];
+				// Initialize an array to keep track of products to remove from the cart
+				$productsToRemoveFromCart = [];
 
-			// Calculate total and shipping fee
-			foreach ($value as $pid => $qty) {
-				$stock_query = mysqli_query($con, "SELECT Quantity, productAvailability, productPrice FROM products WHERE id='$pid'");
-				$stock_info = mysqli_fetch_assoc($stock_query);
-				$stock = $stock_info['productAvailability'];
-				$quantity = $stock_info['Quantity'];
-				$productPrice = $stock_info['productPrice'];
-				$subtotal = $subtotal + ($productPrice * $qty);
+				$transaction_started = false;
+				$order_id = 0;
 
-				if ($qty == 0) {
-					// If quantity is 0, mark this product for removal from the cart
-					$productsToRemoveFromCart[] = $pid;
-					continue; // Skip further processing for this product
-				}
-
-				if ($stock == "In Stock" && $quantity >= $qty) {
-					$totalprice = $subtotal;
-					if ($totalprice > 1000) {
-						$shipping_fee = 0;
-					} else {
-						if ($shippingState == 'Melaka')
-							$shipping_fee = 100.00;
-						else if ($shippingState == 'Sabah' || $shippingState == 'Sarawak')
-							$shipping_fee = 200.00;
-						else
-							$shipping_fee = 150.00;
+				try {
+					if (!mysqli_begin_transaction($con)) {
+						throw new Exception('begin_failed');
 					}
-					$grandtotal = $totalprice + $shipping_fee;
-					mysqli_query($con, "UPDATE products SET Quantity = Quantity - $qty WHERE id='$pid'");
-				} else {
-					header("Location: my-cart.php?message=Item%20out%20of%20stock.%20Please%20remove%20the%20item.");
+					$transaction_started = true;
+
+					// Calculate total and shipping fee while locking stock rows for this order attempt.
+					foreach ($value as $pid => $qty) {
+						$pid = (int) $pid;
+						$qty = (int) $qty;
+
+						$stock_query = mysqli_query($con, "SELECT Quantity, productAvailability, productPrice FROM products WHERE id='$pid' FOR UPDATE");
+						if (!$stock_query) {
+							throw new Exception('query_failed');
+						}
+
+						$stock_info = mysqli_fetch_assoc($stock_query);
+						if (!$stock_info) {
+							throw new Exception('out_of_stock');
+						}
+
+						$stock = $stock_info['productAvailability'];
+						$quantity = (int) $stock_info['Quantity'];
+						$productPrice = (float) $stock_info['productPrice'];
+						$subtotal = $subtotal + ($productPrice * $qty);
+
+						if ($qty == 0) {
+							$productsToRemoveFromCart[] = $pid;
+							continue;
+						}
+
+						if ($stock !== "In Stock" || $quantity < $qty) {
+							throw new Exception('out_of_stock');
+						}
+
+						$totalprice = $subtotal;
+						if ($totalprice > 1000) {
+							$shipping_fee = 0;
+						} else {
+							if ($shippingState == 'Melaka')
+								$shipping_fee = 100.00;
+							else if ($shippingState == 'Sabah' || $shippingState == 'Sarawak')
+								$shipping_fee = 200.00;
+							else
+								$shipping_fee = 150.00;
+						}
+						$grandtotal = $totalprice + $shipping_fee;
+
+						$update_stock_query = mysqli_query($con, "UPDATE products SET Quantity = Quantity - $qty WHERE id='$pid' AND Quantity >= $qty");
+						if (!$update_stock_query || mysqli_affected_rows($con) <= 0) {
+							throw new Exception('out_of_stock');
+						}
+					}
+
+					$remaining_cart = $_SESSION['cart'];
+					foreach ($productsToRemoveFromCart as $pidToRemove) {
+						unset($remaining_cart[$pidToRemove]);
+					}
+
+					if (empty($remaining_cart)) {
+						throw new Exception('empty_cart');
+					}
+
+					$insert_order_query = mysqli_query($con, "INSERT INTO orders(userId, subtotal, shippingCharge, grandtotal, shippingReceiver, shippingPhone, shippingAddress, billingReceiver, billingPhone, billingAddress) VALUES('" . $_SESSION['id'] . "', '$subtotal','$shipping_fee','$grandtotal','$shippingReceiver','$shippingPhone','$fullShippingAddress','$billingReceiver','$billingPhone','$fullBillingAddress')");
+					if (!$insert_order_query) {
+						throw new Exception('insert_order_failed');
+					}
+
+					$order_id = mysqli_insert_id($con);
+					if ($order_id <= 0) {
+						throw new Exception('insert_order_failed');
+					}
+
+					foreach ($value as $pid => $qty) {
+						$pid = (int) $pid;
+						$qty = (int) $qty;
+
+						if ($qty > 0) {
+							$insert_detail_query = mysqli_query($con, "INSERT INTO orderdetails(orderId, productId, quantity) VALUES('$order_id', '$pid', '$qty')");
+							if (!$insert_detail_query) {
+								throw new Exception('insert_detail_failed');
+							}
+						}
+					}
+
+					if (!mysqli_commit($con)) {
+						throw new Exception('commit_failed');
+					}
+					$transaction_started = false;
+				} catch (Exception $e) {
+					if ($transaction_started) {
+						mysqli_rollback($con);
+					}
+
+					if ($e->getMessage() === 'out_of_stock') {
+						header("Location: my-cart.php?message=Item%20out%20of%20stock.%20Please%20remove%20the%20item.");
+					} elseif ($e->getMessage() === 'empty_cart') {
+						header("Location: my-cart.php?message=No%20items%20left%20in%20cart.");
+					} else {
+						header("Location: my-cart.php?message=Unable%20to%20create%20your%20order.%20Please%20try%20again.");
+					}
 					exit;
 				}
-			}
 
-			// Remove products with quantity 0 from the session cart
-			foreach ($productsToRemoveFromCart as $pidToRemove) {
-				unset($_SESSION['cart'][$pidToRemove]);
-			}
+				foreach ($productsToRemoveFromCart as $pidToRemove) {
+					unset($_SESSION['cart'][$pidToRemove]);
+				}
 
-			// Check if there are no items left in the cart
-			if (empty($_SESSION['cart'])) {
-				header("Location: my-cart.php?message=No%20items%20left%20in%20cart.");
+				unset($_SESSION['cart']);
+
+				// Redirect to payment method page with order ID as parameter
+				header('location:payment-method.php?order_id=' . $order_id);
 				exit;
 			}
-
-			// Insert the order into the orders table
-			mysqli_query($con, "INSERT INTO orders(userId, subtotal, shippingCharge, grandtotal, shippingReceiver, shippingPhone, shippingAddress, billingReceiver, billingPhone, billingAddress) VALUES('" . $_SESSION['id'] . "', '$subtotal','$shipping_fee','$grandtotal','$shippingReceiver','$shippingPhone','$fullShippingAddress','$billingReceiver','$billingPhone','$fullBillingAddress')");
-
-			// Get the last inserted order ID
-			$order_id = mysqli_insert_id($con);
-
-			// Loop through the items to insert into orderdetails table
-			foreach ($value as $pid => $qty) {
-				// Check if the quantity is greater than 0 before inserting into orderdetails
-				if ($qty > 0) {
-					// Insert order details for each product
-					mysqli_query($con, "INSERT INTO orderdetails(orderId, productId, quantity) VALUES('$order_id', '$pid', '$qty')");
-				}
-			}
-
-			unset($_SESSION['cart']);
-
-			// Redirect to payment method page with order ID as parameter
-			header('location:payment-method.php?order_id=' . $order_id);
-			exit;
 		}
-	}
 
-	// Process remove_code action
+	// remove item from cart - remove_code action
 	if (isset($_POST['remove_code'])) {
 		if (!empty($_SESSION['cart'])) {
 			foreach ($_POST['remove_code'] as $key) {
@@ -189,7 +240,7 @@ if (strlen($_SESSION['login']) == 0) {
 		$grandtotal = $subtotal + $shipping_fee;
 	}
 
-	// Process update action
+	// update default address action
 	if (isset($_POST['update'])) {
 		$breceiver = $_POST['billingreceiver'];
 		$bphone = $_POST['billingphone'];
@@ -423,7 +474,7 @@ function calculateShippingFee($con, $state, $subtotal)
 														<td class="romove-item"><input type="checkbox" name="remove_code[]"
 																value="<?php echo htmlentities($row['id']); ?>" /></td>
 														<td class="cart-image">
-															<a class="entry-thumbnail" href="detail.html">
+															<a class="entry-thumbnail" href="product-details.php?pid=<?php echo htmlentities($pd = $row['id']); ?>">
 																<img src="admin/productimages/<?php echo $row['id']; ?>/<?php echo $row['productImage1']; ?>"
 																	alt="" width="114" height="146">
 															</a>
@@ -648,7 +699,7 @@ function calculateShippingFee($con, $state, $subtotal)
 							<tr>
 								<td colspan="2">
 									<button type="submit" name="update"
-										class="btn-upper btn btn-primary pull-right checkout-page-button">Update</button>
+										class="btn-upper btn btn-primary pull-right checkout-page-button">Save as Default Address</button>
 								</td>
 							<?php } ?>
 						</tr>

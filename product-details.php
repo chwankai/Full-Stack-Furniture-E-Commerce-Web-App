@@ -2,8 +2,11 @@
 require_once __DIR__ . '/includes/customer_session.php';
 error_reporting(0);
 include ('includes/config.php');
+
+// when users click add to cart button
 if (isset($_GET['action']) && $_GET['action'] == "add") {
 	$id = intval($_GET['id']);
+	// if quantity is set then = value set else = 1
 	$quantity = isset($_GET['qty']) ? intval($_GET['qty']) : 1;
 
 	if (isset($_SESSION['cart'][$id])) {
@@ -22,12 +25,16 @@ if (isset($_GET['action']) && $_GET['action'] == "add") {
 	}
 }
 
+// when users click add to wishlist button
 $pid = intval($_GET['pid']);
 if (isset($_GET['pid']) && $_GET['action'] == "wishlist") {
 	if (strlen($_SESSION['login']) == 0) {
+		// if users not login proceed to login page first
 		header('location:login.php');
 	} else {
+		// add the userid+product id into wishlist table
 		mysqli_query($con, "insert into wishlist(userId,productId) values('" . $_SESSION['id'] . "','$pid')");
+		// show successful popup and route to wishlist page
 		echo "<script>alert('Product aaded in wishlist');</script>";
 		header('location:my-wishlist.php');
 
@@ -560,8 +567,7 @@ if (isset($_GET['pid']) && $_GET['action'] == "wishlist") {
 		$(window).bind("load", function () {
 			$('.show-theme-options').delay(2000).trigger('click');
 		});
-	</script>
-	<script>
+
 		function addToCart(productId) {
 			var quantity = document.getElementById('quantity-input').value;
 			if (quantity < 1) {

@@ -9,7 +9,6 @@
 		    <div class="panel-body">
 				<ul class="nav nav-checkout-progress list-unstyled">
 					<li><a href="my-account.php">My Account</a></li>
-					<li><a href="saved_payment.php">Saved Card Information</a></li>
 					<li><a href="wallet.php">OFS e-Wallet</a></li>
 					<li><a href="bill-ship-addresses.php">Shipping / Billing Address</a></li>
 					<li><a href="order-history.php">Order History</a></li>
@@ -21,4 +20,5 @@
 		</div>
 	</div>
 </div> 
-<!-- checkout-progress-sidebar -->				</div>
+<!-- checkout-progress-sidebar -->
+</div>

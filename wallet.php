@@ -8,27 +8,102 @@ include ('includes/config.php');//checking database connection
 if (strlen($_SESSION['login']) == 0) {
     header('location:login.php');
 } else {
-    if (isset($_POST['topupsubmit']))//update user info and profile
-    {
-        $value = $_POST['topup_value'];
-        header('location:wallet-checkout.php?value=' . $value);
-        exit;
-    }
-    else if (isset($_POST['withdrawsubmit'])) {
-        
-        $value = $_POST['wtdw_value'];
-        $old_value = mysqli_query($con, "SELECT balance FROM users WHERE id ='" . $_SESSION['id'] . "'");
-        $old_value_info = mysqli_fetch_assoc($old_value);
+	if (empty($_SESSION['wallet_withdraw_request_ref'])) {
+		$_SESSION['wallet_withdraw_request_ref'] = bin2hex(random_bytes(16));
+	}
+	$wallet_withdraw_request_ref = $_SESSION['wallet_withdraw_request_ref'];
 
-        $old_value = $old_value_info['balance'];
+	if (isset($_POST['topupsubmit']))//update user info and profile
+	{
+		$value = isset($_POST['topup_value']) ? (float) $_POST['topup_value'] : 0;
+		if ($value < 10) {
+			header('Location: wallet.php?message=Minimum%20reload%20amount%20is%20RM10.');
+			exit;
+		}
 
-        $new_value = $old_value - $value;
+		$_SESSION['pending_wallet_topup'] = $value;
+		$_SESSION['pending_wallet_topup_ref'] = bin2hex(random_bytes(16));
+		header('location:wallet-checkout.php');
+		exit;
+	}
+	    else if (isset($_POST['withdrawsubmit'])) {
+	        
+	        $value = isset($_POST['wtdw_value']) ? (float) $_POST['wtdw_value'] : 0;
+	        $withdraw_reference = isset($_POST['withdraw_reference']) ? trim($_POST['withdraw_reference']) : '';
+	        $transaction_started = false;
 
-		mysqli_query($con, "UPDATE users SET balance = $new_value WHERE id='" . $_SESSION['id'] . "'");
-		mysqli_query($con, "INSERT INTO transaction (user_id, action, amount)  VALUES ('" . $_SESSION['id'] . "', 'Withdraw', '$value')");
-        header("Location: wallet.php?message=Withdraw%20successfully!%20Please%20wait%20three%20to%20five%20days%20for%20processing.");
-        exit;
-    }    
+	        try {
+	        	if ($withdraw_reference === '' || $withdraw_reference !== $wallet_withdraw_request_ref) {
+	        		$existing_withdraw_query = mysqli_query($con, "SELECT id FROM transaction WHERE user_id='" . $_SESSION['id'] . "' AND action='Withdraw' AND transaction_ref='" . mysqli_real_escape_string($con, $withdraw_reference) . "' LIMIT 1");
+	        		if ($existing_withdraw_query && mysqli_fetch_assoc($existing_withdraw_query)) {
+	        			unset($_SESSION['wallet_withdraw_request_ref']);
+	        			header("Location: wallet.php?message=Withdraw%20successfully!%20Please%20wait%20three%20to%20five%20days%20for%20processing.");
+	        			exit;
+	        		}
+	        		throw new Exception('invalid_reference');
+	        	}
+
+	        	if ($value <= 0) {
+	        		throw new Exception('invalid_amount');
+	        	}
+
+	        	if (!mysqli_begin_transaction($con)) {
+	        		throw new Exception('begin_failed');
+	        	}
+	        	$transaction_started = true;
+
+	        	$old_value_query = mysqli_query($con, "SELECT balance FROM users WHERE id ='" . $_SESSION['id'] . "' LIMIT 1 FOR UPDATE");
+	        	if (!$old_value_query) {
+	        		throw new Exception('query_failed');
+	        	}
+
+	        	$old_value_info = mysqli_fetch_assoc($old_value_query);
+	        	if (!$old_value_info) {
+	        		throw new Exception('query_failed');
+	        	}
+
+	        	$old_value = (float) $old_value_info['balance'];
+	        	if ($old_value < $value) {
+	        		throw new Exception('insufficient_balance');
+	        	}
+
+	        	$new_value = $old_value - $value;
+
+			$update_balance_query = mysqli_query($con, "UPDATE users SET balance = $new_value WHERE id='" . $_SESSION['id'] . "'");
+			if (!$update_balance_query) {
+				throw new Exception('update_balance_failed');
+			}
+
+			$insert_transaction_query = mysqli_query($con, "INSERT INTO transaction (user_id, action, amount, transaction_ref)  VALUES ('" . $_SESSION['id'] . "', 'Withdraw', '$value', '$withdraw_reference')");
+			if (!$insert_transaction_query) {
+				throw new Exception('insert_transaction_failed');
+			}
+
+			if (!mysqli_commit($con)) {
+				throw new Exception('commit_failed');
+			}
+			$transaction_started = false;
+	        } catch (Exception $e) {
+	        	if ($transaction_started) {
+	        		mysqli_rollback($con);
+	        	}
+
+	        	if ($e->getMessage() === 'insufficient_balance') {
+	        		header("Location: wallet.php?message=Balance%20insufficient.%20Please%20try%20again.");
+	        	} elseif ($e->getMessage() === 'invalid_reference') {
+	        		header("Location: wallet.php?message=This%20withdrawal%20request%20is%20no%20longer%20valid.%20Please%20try%20again.");
+	        	} elseif ($e->getMessage() === 'invalid_amount') {
+	        		header("Location: wallet.php?message=Please%20enter%20a%20valid%20withdraw%20amount.");
+	        	} else {
+	        		header("Location: wallet.php?message=Unable%20to%20process%20your%20withdrawal.%20Please%20try%20again.");
+	        	}
+	        	exit;
+	        }
+
+	        unset($_SESSION['wallet_withdraw_request_ref']);
+	        header("Location: wallet.php?message=Withdraw%20successfully!%20Please%20wait%20three%20to%20five%20days%20for%20processing.");
+	        exit;
+	    }    
 
     date_default_timezone_set('Asia/Kuala_Lumpur');// change according timezone
     $currentTime = date('d-m-Y h:i:s A', time());
@@ -173,30 +248,18 @@ if (strlen($_SESSION['login']) == 0) {
                                                     </div>
                                                 </form>
                                             </section>
-                                            <section class="withdrawsection" style="display:none;">
-                                                <form id="withdrawForm" method="post" onsubmit="validateAndSubmitWithdrawForm(event)">
-                                                    <div class="wtdw_title" style="margin-bottom:5px;">
-                                                        <label for="withdraw_value" style="font-size:20px">Enter withdraw amount: </label>
-                                                    </div>
+	                                            <section class="withdrawsection" style="display:none;">
+	                                                <form id="withdrawForm" method="post" onsubmit="validateAndSubmitWithdrawForm(event)">
+	                                                    <input type="hidden" name="withdraw_reference" value="<?php echo htmlentities($wallet_withdraw_request_ref); ?>">
+	                                                    <div class="wtdw_title" style="margin-bottom:5px;">
+	                                                        <label for="withdraw_value" style="font-size:20px">Enter withdraw amount: </label>
+	                                                    </div>
                                                     <div class="wtdw_valuebox">
                                                         <div style="width:10%;text-align:center;align-self:center;font-size:20px;">RM </div>
                                                         <input required name="wtdw_value" class="withdraw_value" id="withdraw_value" type="number" min="0.01" step="any" style="border:none;">
                                                     </div>
                                                     <div class="wtdw_title" style="margin-top:10px;margin-bottom:5px;">
-                                                        <label for="saved_card" style="font-size:20px">Select a saved card to withdraw your money:</label>
-                                                    </div>
-                                                    <div class="saved-card" id="saved-card">
-                                                        <select required name="saved_card" id="saved_info" style="width:70%;height:40px;border:none;font-size:15px;border-radius:10px;" onchange="assignFunction(event)">
-                                                            <option value="" disabled selected>Select a saved card</option>
-                                                            <?php
-                                                            // Retrieve saved cards for the logged-in user
-                                                            $result = mysqli_query($con, "SELECT card_number, exp_date, cvv FROM card_information WHERE cust_id = '" . $_SESSION['id'] . "'");
-                                                            while ($row = mysqli_fetch_assoc($result)) {
-                                                                // Display each saved card as an option in the selection box
-                                                                echo "<option value='" . $row['card_number'] . "' data-expiry-date='" . $row['exp_date'] . "' data-cvv='" . $row['cvv'] . "' >" . $row['card_number'] . " - " . $row['exp_date'] . "</option>";
-                                                            }
-                                                            ?>
-                                                        </select>
+                                                        <label style="font-size:16px">Card details are no longer stored locally. Withdrawal destination should be handled separately by your team or admin process.</label>
                                                     </div>
                                                     <div class="wtdwbtn_div" style="height:40px;">
                                                         <input type="submit" value="WITHDRAW" name="withdrawsubmit" id="withdrawsubmit" class="withdrawbtn"></input>

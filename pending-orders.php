@@ -4,44 +4,84 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include ('includes/config.php');
-if (strlen($_SESSION['login']) == 0) {
-	echo '<script>alert("Please login first to see your pending orders.");window.location.href = "login.php";</script>';
-	header('location:login.php');
-} else {
-	if (isset($_GET['id'])) {
-		// Get the order details before deleting
-		$order_query = mysqli_query($con, "SELECT * FROM orders WHERE userId='" . $_SESSION['id'] . "' AND paymentMethod IS NULL AND id='" . $_GET['id'] . "'");
-		$order_details = mysqli_fetch_assoc($order_query);
+	if (strlen($_SESSION['login']) == 0) {
+		echo '<script>alert("Please login first to see your pending orders.");window.location.href = "login.php";</script>';
+		header('location:login.php');
+	} else {
+		if (isset($_GET['id'])) {
+			$order_id = (int) $_GET['id'];
 
-		// Check if the order exists
-		if ($order_details) {
-			// Get the order items
-			$order_id = $order_details['id'];
-			$order_items_query = mysqli_query($con, "SELECT * FROM orderdetails WHERE orderId='$order_id'");
+			$transaction_started = false;
 
-			// Iterate through each item and add back the quantity to the product availability
-			while ($order_item = mysqli_fetch_assoc($order_items_query)) {
-				$product_id = $order_item['productId'];
-				$quantity = $order_item['quantity'];
+			try {
+				if (!mysqli_begin_transaction($con)) {
+					throw new Exception('begin_failed');
+				}
+				$transaction_started = true;
 
-				// Update product availability
-				mysqli_query($con, "UPDATE products SET Quantity = Quantity + $quantity WHERE id='$product_id'");
+			// Get the order details before deleting
+			$order_query = mysqli_query($con, "SELECT * FROM orders WHERE userId='" . $_SESSION['id'] . "' AND paymentMethod IS NULL AND id='$order_id' FOR UPDATE");
+			if (!$order_query) {
+				throw new Exception('query_failed');
 			}
+			$order_details = mysqli_fetch_assoc($order_query);
 
-			// Delete order details
-			mysqli_query($con, "DELETE FROM orderdetails WHERE orderId='$order_id'");
-			// Delete order
-			mysqli_query($con, "DELETE FROM orders WHERE id='$order_id'");
+			// Check if the order exists
+			if ($order_details) {
+				// Get the order items
+				$order_items_query = mysqli_query($con, "SELECT * FROM orderdetails WHERE orderId='$order_id'");
+				if (!$order_items_query) {
+					throw new Exception('query_failed');
+				}
 
-			// Redirect back to pending orders page
-			header('location:pending-orders.php');
-			exit;
-		} else {
-			// If the order does not exist, redirect back to pending orders page
-			header('location:pending-orders.php');
-			exit;
+				// Iterate through each item and add back the quantity to the product availability
+				while ($order_item = mysqli_fetch_assoc($order_items_query)) {
+					$product_id = $order_item['productId'];
+					$quantity = $order_item['quantity'];
+
+					// Update product availability
+					$restore_stock_query = mysqli_query($con, "UPDATE products SET Quantity = Quantity + $quantity WHERE id='$product_id'");
+					if (!$restore_stock_query) {
+						throw new Exception('restore_failed');
+					}
+				}
+
+				// Delete order details
+				$delete_details_query = mysqli_query($con, "DELETE FROM orderdetails WHERE orderId='$order_id'");
+				if ($delete_details_query === false) {
+					throw new Exception('delete_failed');
+				}
+				// Delete order
+				$delete_order_query = mysqli_query($con, "DELETE FROM orders WHERE id='$order_id'");
+				if (!$delete_order_query || mysqli_affected_rows($con) <= 0) {
+					throw new Exception('delete_failed');
+				}
+
+				if (!mysqli_commit($con)) {
+					throw new Exception('commit_failed');
+				}
+				$transaction_started = false;
+
+				// Redirect back to pending orders page
+				header('location:pending-orders.php');
+				exit;
+			} else {
+				if ($transaction_started) {
+					mysqli_rollback($con);
+					$transaction_started = false;
+				}
+				// If the order does not exist, redirect back to pending orders page
+				header('location:pending-orders.php');
+				exit;
+			}
+			} catch (Exception $e) {
+				if ($transaction_started) {
+					mysqli_rollback($con);
+				}
+				header('location:pending-orders.php');
+				exit;
+			}
 		}
-	}
 
 	?>
 
