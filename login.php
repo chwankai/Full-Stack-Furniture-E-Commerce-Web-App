@@ -6,6 +6,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 // include ('includes/config.php');
 require_once __DIR__ . "/includes/config.php";
+require_once __DIR__ . "/includes/google-config.php";
 // google OAuth
 $loginUrl = $client->createAuthUrl();
 // php Code  for user Registration
@@ -239,7 +240,7 @@ if (isset($_POST['login'])) {
 
 						<br>
 
-						<a href="<?= htmlspecialchars($loginUrl) ?>" style="text-decoration:none;">
+						<a href="<?= htmlspecialchars($loginUrl) ?>" style="text-decoration:none; display: block; width: 100%; margin-top: 15px;">
 						<button type="button" class="gsi-material-button">
 
 							<div class="gsi-material-button-state"></div>
